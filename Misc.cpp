@@ -162,10 +162,11 @@ int main(int argc, char* argv[]){
 	setlocale(LC_ALL, "");
 
 	bool isLogout = false;
-	int nCurrentID = 0;
+	int nID, nCurrentID = 0;
 	std::string sDefaultLogin = "admin";
 	std::string sDefaultPassword = "password";
-	std::vector<Account> vAccounts(1);
+	std::vector<Account> vAccounts(0);
+	vAccounts.resize(nCurrentID + 1);
 	vAccounts[0] = Account(sDefaultLogin, sDefaultPassword, Account::admin);
 
 	std::string sName, sPassword, sInput;
@@ -182,7 +183,7 @@ int main(int argc, char* argv[]){
 				if (sInput.find('-') != std::string::npos){
 					throw std::invalid_argument("");
 				}
-				nCurrentID = stoi(sInput);
+				nID = stoi(sInput);
 			}
 			catch (std::invalid_argument) {
 				printError("Error! The ID must be an unsigned integer.");
@@ -195,10 +196,11 @@ int main(int argc, char* argv[]){
 			printInput("Enter your password: ");
 			std::cin >> sPassword;
 
-			if (nCurrentID >= vAccounts.size()){
+			if (nID >= vAccounts.size()){
 				printOutput("Authorisation error!");
 			}
-			else if (vAccounts[nCurrentID].isAuthCorrect(sName, sPassword)){
+			else if (vAccounts[nID].isAuthCorrect(sName, sPassword)){
+				nCurrentID = nID;
 				printOutput("Access granted!");
 			}
 			else {
@@ -226,8 +228,6 @@ int main(int argc, char* argv[]){
 			}
 
 			std::string sOldPassword, sNewPassword;
-			int nID;
-
 			if (vAccounts[nCurrentID].getStatus() == Account::admin) {
 				switch (iChoose){
 				case 1:
